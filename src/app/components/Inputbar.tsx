@@ -3,16 +3,17 @@ import React,{useState} from "react";
 import { Send } from "lucide-react";
 
 type InputbarProps = {
-    onSend: (message: string) => void;
+    onSend: (message: string) => void
+    disabled:boolean
 };
 
-function Inputbar ({onSend}:InputbarProps) {
+function Inputbar (props:InputbarProps) {
 const[message,setMessage]=useState("")
 
 function handleSubmit(e: React.FormEvent){
   e.preventDefault();
   if(message.trim()=="") return;
-  onSend(message);
+  props.onSend(message);
   setMessage("")
 }
 
@@ -24,11 +25,11 @@ return (
       onChange={(e) => setMessage(e.target.value)}
       className="flex-1 bg-transparent text-white placeholder-gray-400 focus:outline-none"
       placeholder="Ask anything here"
+      disabled={props.disabled}
     />
-    <Send
-      className="w-5 h-5 text-gray-400 hover:text-white transition"
-      onClick={()=>{onSend(message); setMessage("")}}
-    />
+    <button type="submit" disabled={props.disabled}>
+      <Send className="w-5 h-5 text-gray-400 hover:text-white transition" />
+    </button>
   </div>
 </form>
 )

@@ -1,14 +1,21 @@
 "use client";
 import React,{useState,useRef,useEffect} from "react";
+import { Loader2 } from "lucide-react";
 import Inputbar from "./Inputbar";
 
 export default function ChatPage(){
     const [messages, setMessages] = useState([] as {sender:string, text:string}[]);
     const bottomRef=useRef<HTMLDivElement| null>(null)
     const [hasStartedMessages,sethasStartedMessages]=useState(false)
+    const [conversationId,setconversationId]=useState<string | null>(null);
+    const[isLoading,setisLoading]=useState(false)
 
-    function handleUserMessage(message:string)
+    async function handleUserMessage(message:string)
     {
+        //For redundancy
+        if(!message.trim()){
+            return
+        }
         console.log("User message received:", message);
         if(!hasStartedMessages)
         {
@@ -16,16 +23,41 @@ export default function ChatPage(){
         }
         const Newmessages={sender:"user" ,text:message}
         setMessages(prevMessages => [...prevMessages, Newmessages]);
-        handleBotMessages("This is a bot reply");
+        try{
+        setisLoading(true)
+
+        const response=await fetch(
+           `${process.env.NEXT_PUBLIC_API_URL}/chat`,
+           {
+            method: "POST",
+            headers: {
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                message:message,
+                conversation_id: conversationId
+            }),
+
+           },
+        );
+
+        const data= await response.json()
+        setconversationId(data.conversation_id);
+
+        setMessages(prev=>[...prev,{sender:"bot",text:data.reply}])
+
+    } catch (error) {
+        setMessages(prev1 =>[...prev1,{
+            sender:"bot",
+            text:"Having trouble responding.Try Again Later"
+        }])
+    } finally {
+        setisLoading(false)
     }
 
-    function handleBotMessages(botReply:string)
-    {
-        setTimeout(() => {
-            const botMessage = { sender: "bot", text:botReply };
-            setMessages(prev => [...prev, botMessage]);
-        }, 1000);
     }
+
+
 
     useEffect(()=> {
         if(bottomRef.current != null)
@@ -36,22 +68,13 @@ export default function ChatPage(){
         }
     },[messages.length])
 
-    let containerjustify:string
-    if(!hasStartedMessages)
-    {
-        containerjustify="justify-start"
-    }
-    else{
-        containerjustify="justify-start"
-    }
-
     return(
         <>
         <div className="w-full max-w-4xl flex flex-col h-screen sm:h-dvh overflow-hidden pb-6">
 
         <div className="h-16 shrink-0" />
 
-        <div className={`flex-1 flex flex-col min-h-0 ${containerjustify}`}>
+        <div className={`flex-1 flex flex-col min-h-0 justify-start`}>
             {/*Welcome Section */}
         {!hasStartedMessages &&(
                 <div className="flex flex-col items-center gap-6 text-center px-4 mt-[8vh]">
@@ -59,7 +82,7 @@ export default function ChatPage(){
                     Ask Anything related to college
                 </h2>
                 <div className="w-full max-w-xl bg-gray-700 rounded-2xl">
-                    <Inputbar onSend={handleUserMessage} />
+                    <Inputbar onSend={handleUserMessage} disabled={isLoading} />
                 </div>
             </div>
         )}
@@ -68,7 +91,7 @@ export default function ChatPage(){
         <>
         {/* Message Area */}
         <div className="flex-1 bg-gray-700 rounded-2xl flex flex-col overflow-hidden">
-        <div className="flex-1 min-h-0 flex flex-col min-h-0 overflow-y-auto px-3 sm:px-4 pt-6 pb-4 space-y-3">
+        <div className="flex-1 min-h-0 flex flex-col overflow-y-auto px-3 sm:px-4 pt-6 pb-4 space-y-3">
         {messages.map((msg,index)=> {
             let alignmentClass=""
             let bubbleClass=""
@@ -87,12 +110,32 @@ export default function ChatPage(){
                 </div>
                 </div>
             )
-        })}
+        }
+        
+        )
+
+        
+        }
+        {/*Spinner loading*/}
+        { isLoading && (
+            <div className="flex justify-start px-3">
+                <Loader2 className="w-5 h-5 animate-spin text-gray-400"/>
+
+            </div>
+
+        )
+
+
+
+        }
+
+
+
         <div ref={bottomRef} />
         </div>
-        {/* Sticky Bar */}
-        <div className="sticky bottom-0 border-t border-white/10 bg-gray-800/80 backdrop-blur sm:static px-3 pt-2 pb-3 pb-[env(safe-area-inset-bottom)]">
-        <Inputbar onSend={handleUserMessage} />
+        {/* Sticky Bar to keep mobile responsiveness */}
+        <div className="sticky bottom-0 border-t border-white/10 bg-gray-800/80 backdrop-blur sm:static px-3 pt-2 pb-3">
+        <Inputbar onSend={handleUserMessage} disabled={isLoading} />
         </div>
         </div>
 
