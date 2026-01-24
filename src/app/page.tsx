@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { Menu } from "lucide-react";
 import ChatPage from "./components/chatpage";
+import { useState } from "react";
 
 export default function Home() {
+  const [hasStarted, setHasStarted] = useState(false);
   return (
     <div className="flex flex-col items-center w-full h-screen overflow-hidden">
     {/* Header */}
@@ -15,22 +17,22 @@ export default function Home() {
 
         <div className="w-6 h-6" />
       </div>
-
+      {!hasStarted &&(
       <h2 className="text-sm sm:text-lg text-center mt-2">
         Ask anything about courses, placements, hostels, academics
-      </h2>
-
+      </h2>)}
       {/* Logo */}
+      {!hasStarted &&(
       <Image
         src="/vit.png"
         alt="VIT logo"
         width={160}
         height={160}
         className="mt-4 sm:mt-6"
-      />
+      />)}
 
       {/* Chat */}
-      <ChatPage />
+      <ChatPage onStart={()=>setHasStarted(true)}/>
     </div>
   );
 }

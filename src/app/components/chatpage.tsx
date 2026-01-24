@@ -5,7 +5,10 @@ import Inputbar from "./Inputbar";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-export default function ChatPage(){
+type ChatPageProps ={
+    onStart:()=>void
+};
+export default function ChatPage({onStart}:ChatPageProps){
     const [messages, setMessages] = useState([] as {sender:string, text:string}[]);
     const bottomRef=useRef<HTMLDivElement| null>(null)
     const [hasStartedMessages,sethasStartedMessages]=useState(false)
@@ -22,6 +25,7 @@ export default function ChatPage(){
         if(!hasStartedMessages)
         {
             sethasStartedMessages(true)
+            onStart();
         }
         const Newmessages={sender:"user" ,text:message}
         setMessages(prevMessages => [...prevMessages, Newmessages]);
