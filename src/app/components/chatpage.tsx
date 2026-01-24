@@ -107,7 +107,7 @@ export default function ChatPage(){
 
             return (
                 <div key={index} className={`flex mb-3 ${alignmentClass}`}>
-                <div className={`px-4 py-2 rounded-xl max-w-[80%] sm:max-w-xs ${bubbleClass}`}>
+                <div className={`px-4 py-2 rounded-xl max-w-[75%] ${bubbleClass}`}>
                     {/*=== for strict equality and GitHub markdowns */}
                     {msg.sender ==="bot"?(
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
