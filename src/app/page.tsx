@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { Menu } from "lucide-react";
 import ChatPage from "./components/chatpage";
