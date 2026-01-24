@@ -2,6 +2,8 @@
 import React,{useState,useRef,useEffect} from "react";
 import { Loader2 } from "lucide-react";
 import Inputbar from "./Inputbar";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function ChatPage(){
     const [messages, setMessages] = useState([] as {sender:string, text:string}[]);
@@ -106,7 +108,12 @@ export default function ChatPage(){
             return (
                 <div key={index} className={`flex mb-3 ${alignmentClass}`}>
                 <div className={`px-4 py-2 rounded-xl max-w-[80%] sm:max-w-xs ${bubbleClass}`}>
-                    {msg.text}
+                    {/*=== for strict equality and GitHub markdowns */}
+                    {msg.sender ==="bot"?(
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {msg.text}
+                        </ReactMarkdown>
+                    ):(msg.text)}
                 </div>
                 </div>
             )
@@ -128,7 +135,6 @@ export default function ChatPage(){
 
 
         }
-
 
 
         <div ref={bottomRef} />
