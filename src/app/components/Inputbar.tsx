@@ -19,11 +19,11 @@ function handleSubmit(e: React.FormEvent){
 
 return (
 <form onSubmit={handleSubmit} className="w-full">
-  <div className="flex items-center gap-3 w-full px-4 py-3">
+  <div className="flex items-center gap-3 w-full px-3 py-2">
     <input
       value={message}
       onChange={(e) => setMessage(e.target.value)}
-      className="flex-1 bg-transparent text-white placeholder-gray-400 focus:outline-none"
+      className="flex-1 bg-transparent text-white placeholder-gray-400 focus:ring-0"
       placeholder="Ask anything here"
       disabled={props.disabled}
     />

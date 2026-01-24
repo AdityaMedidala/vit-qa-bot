@@ -144,7 +144,7 @@ export default function ChatPage({onStart}:ChatPageProps){
         <div ref={bottomRef} />
         </div>
         {/* Sticky Bar to keep mobile responsiveness */}
-        <div className="sticky bottom-0 border-t border-white/10 bg-gray-800/80 backdrop-blur sm:static px-3 pt-2 pb-3">
+        <div className="sticky bottom-0 border-t border-white/10 bg-gray-700 px-3 pt-2 pb-3 rounded-b-2xl">
         <Inputbar onSend={handleUserMessage} disabled={isLoading} />
         </div>
         </div>
